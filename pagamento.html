@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finalizar Pedido - Comida Ucraniana</title>
+    <style>
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #0057b7 48%, #ffd700 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #0057b7;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .carrinho-resumo {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .item-carrinho {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .total {
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #0057b7;
+            border-top: 2px solid #0057b7;
+            padding-top: 10px;
+            text-align: right;
+        }
+        
+        .user-info {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .btn {
+            background: #0057b7;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: #003d8f;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        
+        .btn-success {
+            background: #28a745;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+        }
+        
+        .login-required {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .login-required h2 {
+            color: #0057b7;
+            margin-bottom: 20px;
+        }
+        
+        .login-required p {
+            margin-bottom: 30px;
+            color: #666;
+        }
+        
+        .payment-form {
+            margin-top: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #0057b7;
+        }
+
+        /* Loading overlay */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loading-content {
+            text-align: center;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0057b7;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading inicial -->
+    <div id="loading" class="loading">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Verificando acesso...</p>
+        </div>
+    </div>
+
+    <div class="container" id="mainContent" style="display: none;">
+        <!-- Área quando usuário NÃO está logado -->
+        <div id="loginRequired" class="login-required" style="display: none;">
+            <h2>🔐 Login Obrigatório</h2>
+            <p><strong>Acesso Restrito!</strong> Para finalizar seu pedido, você deve fazer login primeiro.</p>
+            <p>Seus itens do carrinho serão salvos automaticamente! 🛒</p>
+            
+            <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #ffc107;">
+                <strong>⚠️ Atenção:</strong> Esta página só pode ser acessada por usuários autenticados.
+            </div>
+            
+            <button class="btn" onclick="irParaLogin()">
+                🔑 Fazer Login Agora
+            </button>
+            <button class="btn btn-secondary" onclick="voltarParaCardapio()">
+                🍽️ Voltar ao Cardápio
+            </button>
+        </div>
+
+        <!-- Área quando usuário ESTÁ logado -->
+        <div id="checkoutArea" style="display: none;">
+            <h1>🛒 Finalizar Pedido</h1>
+            
+            <!-- Informações do usuário -->
+            <div class="user-info">
+                <h3>👤 Dados do Cliente</h3>
+                <p id="nomeCliente">Nome: [Carregando...]</p>
+                <p id="emailCliente">Email: [Carregando...]</p>
+                <button class="btn btn-secondary" onclick="logout()">🚪 Trocar Conta</button>
+            </div>
+            
+            <!-- Resumo do carrinho -->
+            <div class="carrinho-resumo">
+                <h3>📋 Resumo do Pedido</h3>
+                <div id="itensCarrinho">
+                    <!-- Itens serão carregados aqui -->
+                </div>
+                <div class="total" id="totalPedido">
+                    Total: R$ 0,00
+                </div>
+            </div>
+            
+            <!-- Formulário de pagamento -->
+            <div class="payment-form">
+                <h3>💳 Dados do Pagamento</h3>
+                <form id="formPagamento" onsubmit="processarPagamento(event)">
+                    <div class="form-group">
+                        <label for="metodoPagamento">Método de Pagamento:</label>
+                        <select id="metodoPagamento" required>
+                            <option value="">Selecione...</option>
+                            <option value="cartao">💳 Cartão de Crédito</option>
+                            <option value="pix">💰 PIX</option>
+                            <option value="dinheiro">💵 Dinheiro na Entrega</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="endereco">Endereço de Entrega:</label>
+                        <input type="text" id="endereco" placeholder="Rua, número, bairro" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="observacoes">Observações (opcional):</label>
+                        <input type="text" id="observacoes" placeholder="Alguma observação especial?">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success" style="width: 100%;">
+                        ✅ Finalizar Pedido
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let usuarioLogado = null;
+        let carrinho = [];
+
+        // PROTEÇÃO CRÍTICA: Verificar login IMEDIATAMENTE ao carregar a página
+        window.onload = function() {
+            setTimeout(() => {
+                verificarLoginObrigatorio();
+            }, 500); // Pequeno delay para melhor UX
+        }
+
+        // Função principal de proteção
+        function verificarLoginObrigatorio() {
+            const usuarioSalvo = localStorage.getItem('usuarioLogado');
+            
+            // Esconder loading
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+            
+            if (!usuarioSalvo) {
+                // SEM LOGIN = ACESSO NEGADO
+                mostrarLoginObrigatorio();
+                return false;
+            }
+            
+            try {
+                usuarioLogado = JSON.parse(usuarioSalvo);
+                // Verificar se os dados são válidos
+                if (!usuarioLogado.email || !usuarioLogado.nome) {
+                    throw new Error('Dados de usuário inválidos');
+                }
+                
+                mostrarAreaCheckout();
+                carregarCarrinho();
+                return true;
+            } catch (error) {
+                console.error('Erro nos dados do usuário:', error);
+                // Limpar dados corrompidos
+                localStorage.removeItem('usuarioLogado');
+                mostrarLoginObrigatorio();
+                return false;
+            }
+        }
+
+        function mostrarLoginObrigatorio() {
+            document.getElementById('loginRequired').style.display = 'block';
+            document.getElementById('checkoutArea').style.display = 'none';
+            
+            // Log de segurança
+            console.warn('🔒 ACESSO NEGADO: Login obrigatório para acessar pagamento');
+        }
+
+        function mostrarAreaCheckout() {
+            document.getElementById('loginRequired').style.display = 'none';
+            document.getElementById('checkoutArea').style.display = 'block';
+            
+            // Preencher dados do usuário
+            document.getElementById('nomeCliente').textContent = `Nome: ${usuarioLogado.nome}`;
+            document.getElementById('emailCliente').textContent = `Email: ${usuarioLogado.email}`;
+            
+            exibirResumoCarrinho();
+            
+            console.log('✅ Usuário autenticado:', usuarioLogado.email);
+        }
+
+        function carregarCarrinho() {
+            const carrinhoSalvo = localStorage.getItem('carrinho');
+            if (carrinhoSalvo) {
+                try {
+                    carrinho = JSON.parse(carrinhoSalvo);
+                } catch (error) {
+                    console.error('Erro ao carregar carrinho:', error);
+                    carrinho = [];
+                }
+            }
+        }
+
+        function exibirResumoCarrinho() {
+            const container = document.getElementById('itensCarrinho');
+            const totalElement = document.getElementById('totalPedido');
+            
+            if (carrinho.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 20px; color: #666;">
+                        <p>🛒 Seu carrinho está vazio!</p>
+                        <button class="btn" onclick="voltarParaCardapio()" style="margin-top: 10px;">
+                            🍽️ Adicionar Itens
+                        </button>
+                    </div>
+                `;
+                totalElement.textContent = 'Total: R$ 0,00';
+                return;
+            }
+            
+            let total = 0;
+            let html = '';
+            
+            carrinho.forEach(item => {
+                const subtotal = item.preco * item.quantidade;
+                total += subtotal;
+                
+                html += `
+                    <div class="item-carrinho">
+                        <div>
+                            <strong>${item.nome}</strong><br>
+                            <small>${item.traducao || ''}</small><br>
+                            <small>Quantidade: ${item.quantidade}</small>
+                        </div>
+                        <div>R$ ${subtotal.toFixed(2)}</div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            totalElement.textContent = `Total: R$ ${total.toFixed(2)}`;
+        }
+
+        function irParaLogin() {
+            // Salvar a página atual para voltar depois do login
+            localStorage.setItem('voltarPara', 'pagamento.html');
+            window.location.href = 'login.html';
+        }
+
+        function voltarParaCardapio() {
+            window.location.href = 'index.html';
+        }
+
+        function logout() {
+            if (confirm('Tem certeza que deseja fazer logout? Você precisará fazer login novamente para finalizar pedidos.')) {
+                localStorage.removeItem('usuarioLogado');
+                localStorage.removeItem('voltarPara');
+                usuarioLogado = null;
+                
+                // Mostrar tela de login obrigatório
+                verificarLoginObrigatorio();
+            }
+        }
+
+        async function processarPagamento(event) {
+            event.preventDefault();
+            
+            // DUPLA VERIFICAÇÃO: Usuário ainda está logado?
+            if (!usuarioLogado || !localStorage.getItem('usuarioLogado')) {
+                alert('🔒 Sessão expirada! Faça login novamente.');
+                irParaLogin();
+                return;
+            }
+            
+            const metodoPagamento = document.getElementById('metodoPagamento').value;
+            const endereco = document.getElementById('endereco').value;
+            const observacoes = document.getElementById('observacoes').value;
+            
+            if (carrinho.length === 0) {
+                alert('❌ Carrinho vazio! Adicione itens antes de finalizar.');
+                return;
+            }
+            
+            const total = carrinho.reduce((sum, item) => sum + (item.preco * item.quantidade), 0);
+            
+            const pedido = {
+                usuario: usuarioLogado,
+                itens: carrinho,
+                total: total,
+                metodoPagamento,
+                endereco,
+                observacoes,
+                dataHora: new Date().toISOString()
+            };
+            
+            // Desabilitar botão durante processamento
+            const btnSubmit = event.target.querySelector('button[type="submit"]');
+            const textoOriginal = btnSubmit.textContent;
+            btnSubmit.disabled = true;
+            btnSubmit.textContent = '⏳ Processando...';
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/pedidos', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(pedido)
+                });
+                
+                const resultado = await response.json();
+                
+                if (resultado.success) {
+                    alert(`🎉 Pedido realizado com sucesso!\n\nTotal: R$ ${total.toFixed(2)}\nObrigado por escolher nossos pratos ucranianos!`);
+                    
+                    // Limpar carrinho
+                    localStorage.removeItem('carrinho');
+                    carrinho = [];
+                    
+                    // Voltar para o cardápio
+                    window.location.href = 'index.html';
+                } else {
+                    alert('❌ Erro ao processar pedido: ' + (resultado.message || 'Erro desconhecido'));
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('❌ Erro na comunicação com o servidor. Verifique sua conexão e tente novamente.');
+            } finally {
+                // Reabilitar botão
+                btnSubmit.disabled = false;
+                btnSubmit.textContent = textoOriginal;
+            }
+        }
+
+        // PROTEÇÃO ADICIONAL: Verificar periodicamente se ainda está logado
+        setInterval(() => {
+            if (!localStorage.getItem('usuarioLogado') && usuarioLogado) {
+                console.warn('🔒 Sessão perdida - redirecionando para login');
+                irParaLogin();
+            }
+        }, 30000); // Verificar a cada 30 segundos
+
+        // Prevenir acesso direto via URL
+        if (document.referrer === '' && !localStorage.getItem('usuarioLogado')) {
+            console.warn('🔒 Tentativa de acesso direto sem autenticação');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+ID,Nome,Email,Senha,Tipo,Data Cadastro
+1,Oksane Reifur,oksanereifur@alunos.utfpr.edu.br,gleswz23,cliente,2025-06-28T22:28:37.415Z
+2,Administrador Oksane,admin@oksane.com,admin123,gerente,2025-06-28T22:30:00.000Z
+3,Usuario Teste,user@teste.com,123456,cliente,2025-06-28T22:30:00.000Z
+4,Cliente VIP,vip@oksane.com,vip123,cliente,2025-06-28T22:30:00.000Z
+5,Gerente Sistema,gerente@oksane.com,gerente123,gerente,2025-06-28T22:30:00.000Z
+6,joao2,joao@email.com,12341234,cliente,2025-06-29T15:33:48.890Z
+7,joao3,joao@email2.com,12341234,cliente,2025-06-29T15:34:08.972Z
+8,joao4,joao4@email.com,12341234,gerente,2025-06-29T15:34:20.828Z

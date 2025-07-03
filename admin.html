@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração - Comidas Ucranianas</title>
+    <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom, #0057b7 48%, #ffd700 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: #05070f;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            background: #05366b;
+            padding: 2rem;
+            text-align: center;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3);
+        }
+
+        .header h1 {
+            font-family: 'UnifrakturMaguntia', cursive;
+            color: #fad70f;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #f4f5f8;
+            font-size: 1.1rem;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-btn.primary {
+            background: #0057b7;
+            color: white;
+        }
+
+        .nav-btn.secondary {
+            background: #28a745;
+            color: white;
+        }
+
+        .nav-btn.danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .content-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section h2 {
+            font-family: 'UnifrakturMaguntia', cursive;
+            color: #0057b7;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            text-align: center;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #0057b7;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin: 0.25rem;
+        }
+
+        .btn-primary {
+            background: #0057b7;
+            color: white;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        table th,
+        table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table th {
+            background: #0057b7;
+            color: white;
+            font-weight: bold;
+        }
+
+        table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .message.hidden {
+            display: none;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #0057b7;
+            color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card p {
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .navigation {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🇺🇦 Painel Administrativo</h1>
+            <p>Gerencie comidas e usuários do restaurante ucraniano</p>
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn primary" onclick="showSection('dashboard')">
+                📊 Dashboard
+            </button>
+            <button class="nav-btn secondary" onclick="showSection('comidas')">
+                🍽️ Gerenciar Comidas
+            </button>
+            <button class="nav-btn secondary" onclick="showSection('usuarios')">
+                👥 Gerenciar Usuários
+            </button>
+            <a href="index.html" class="nav-btn danger">
+                🏠 Voltar ao Site
+            </a>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard" class="content-section section active">
+            <h2>📊 Dashboard</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3 id="totalComidas">0</h3>
+                    <p>Pratos Cadastrados</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="totalUsuarios">0</h3>
+                    <p>Usuários Registrados</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="totalPedidos">0</h3>
+                    <p>Pedidos Realizados</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gerenciar Comidas -->
+        <div id="comidas" class="content-section section">
+            <h2>🍽️ Gerenciar Comidas</h2>
+            
+            <div id="messageComidas" class="message hidden"></div>
+
+            <!-- Formulário para adicionar/editar comida -->
+            <div class="form-section">
+                <h3 id="formTitleComida">➕ Adicionar Nova Comida</h3>
+                <form id="formComida">
+                    <input type="hidden" id="editIdComida" value="">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="nomeUcraniano">Nome em Ucraniano:</label>
+                            <input type="text" id="nomeUcraniano" placeholder="Ex: Вареники" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="traducao">Tradução:</label>
+                            <input type="text" id="traducao" placeholder="Ex: Varenyky (Bolinhos)" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="preco">Preço (R$):</label>
+                            <input type="number" id="preco" step="0.01" placeholder="Ex: 25.50" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="imagem">Imagem:</label>
+                            <input type="text" id="imagem" placeholder="Ex: imagens/varenyky.jpg" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="alt">Texto Alternativo:</label>
+                            <input type="text" id="alt" placeholder="Ex: Varenyky" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="descricao">Descrição:</label>
+                            <textarea id="descricao" rows="3" placeholder="Descrição do prato..."></textarea>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-success">💾 Salvar</button>
+                        <button type="button" class="btn btn-warning" onclick="limparFormComida()">🔄 Limpar</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Lista de comidas -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome Ucraniano</th>
+                            <th>Tradução</th>
+                            <th>Preço</th>
+                            <th>Imagem</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaComidas">
+                        <!-- Comidas serão carregadas aqui -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Gerenciar Usuários -->
+        <div id="usuarios" class="content-section section">
+            <h2>👥 Gerenciar Usuários</h2>
+            
+            <div id="messageUsuarios" class="message hidden"></div>
+
+            <!-- Formulário para adicionar/editar usuário -->
+            <div class="form-section">
+                <h3 id="formTitleUsuario">➕ Adicionar Novo Usuário</h3>
+                <form id="formUsuario">
+                    <input type="hidden" id="editIdUsuario" value="">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="nomeUsuario">Nome:</label>
+                            <input type="text" id="nomeUsuario" placeholder="Nome completo" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="emailUsuario">Email:</label>
+                            <input type="email" id="emailUsuario" placeholder="email@exemplo.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="senhaUsuario">Senha:</label>
+                            <input type="password" id="senhaUsuario" placeholder="Senha" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="tipoUsuario">Tipo de Usuário:</label>
+                            <select id="tipoUsuario" required>
+                                <option value="">Selecione...</option>
+                                <option value="cliente">Cliente</option>
+                                <option value="admin">Administrador</option>
+                                <option value="gerente">Gerente</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button type="submit" class="btn btn-success">💾 Salvar</button>
+                        <button type="button" class="btn btn-warning" onclick="limparFormUsuario()">🔄 Limpar</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Lista de usuários -->
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Email</th>
+                            <th>Tipo</th>
+                            <th>Data Cadastro</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaUsuarios">
+                        <!-- Usuários serão carregados aqui -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

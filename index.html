@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Comida Ucraniana</title>
+  <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .top-right {
+      position: absolute;
+      top: 1.5rem;
+      right: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .top-right button {
+      padding: 0.4rem 0.8rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      background-color: #0057b7;
+      color: white;
+      font-weight: bold;
+    }
+    .barra-pesquisa {
+      margin-top: 1rem;
+      text-align: center;
+    }
+    .barra-pesquisa input {
+      padding: 0.6rem;
+      width: 60%;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <header class="cabecalho">
+    <h1>Comidas Ucranianas <br> Смачний <span class="traducao">(Smachnyi)</span></h1>
+    <div class="top-right">
+      <a href="login.html"><button>Login</button></a>
+      <a href="login.html" onclick="localStorage.setItem('voltarPara', 'index.html')"><button>Gerência</button></a>
+      <div style="margin-top: 25px;" class="carrinho-icon" onclick="proximaTela('resumo')">
+        🛒 <span id="contadorCarrinho">0</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="barra-pesquisa">
+    <input type="text" id="pesquisa" placeholder="Buscar pratos..." onkeyup="filtrarComidas()">
+  </div>
+
+  <div id="app">
+    <!-- Tela 1: Cardápio -->
+    <section id="cardapio" class="tela ativa">
+      <h2>CARDÁPIO</h2>
+      <div class="itens"></div>
+      <button onclick="proximaTela('resumo')">Próximo</button>
+    </section>
+
+    <div class="quantidade">
+      <button class="menos">-</button>
+      <span>0</span>
+      <button class="mais">+</button>
+    </div>
+
+    <!-- Tela 2: Resumo -->
+    <section id="resumo" class="tela">
+      <h2>Resumo do Pedido</h2>
+      <div id="resumoItens"></div>
+      <div class="resumo-buttons">
+        <button class="btn-voltar" onclick="voltarTela('cardapio')">← Voltar</button>
+        <button class="btn-proximo" onclick="proximaTela('pagamento')">Finalizar Pedido →</button>
+      </div>
+    </section>
+
+    <!-- Tela 3: Pagamento -->
+    <section id="pagamento" class="tela">
+      <h2>Forma de Pagamento</h2>
+      <p><strong>Chave PIX:</strong></p>
+      <div id="pix" onclick="copiarPix()">124.047.019-32</div>
+      <small>Clique para copiar</small>
+      <input type="text" id="nome" placeholder="Nome" />
+      <input type="text" id="nascimento" placeholder="Data de Nascimento (dia/mês/ano)" />
+      <input type="text" id="cpf" placeholder="CPF" />
+      <button onclick="voltarTela('resumo')">Voltar</button>
+      <button class="finalizar" onclick="finalizarCompra()">Feito</button>
+    </section>
+
+    <!-- Tela 4: Sucesso -->
+    <section id="sucesso" class="tela">
+      <h2>COMPRA COM SUCESSO NO СМАЧНИЙ</h2>
+      <p>✨ Дякуємо! (Obrigado!) ✨</p>
+      <button onclick="voltarTela('cardapio')">Voltar ao Início</button>
+      <canvas id="confete"></canvas>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="script.js"></script>
+  <script>
+    function filtrarComidas() {
+      const termo = document.getElementById('pesquisa').value.toLowerCase();
+      const cards = document.querySelectorAll('.itens > div');
+
+      cards.forEach(card => {
+        const texto = card.innerText.toLowerCase();
+        card.style.display = texto.includes(termo) ? '' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>

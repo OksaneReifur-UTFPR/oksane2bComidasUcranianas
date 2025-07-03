@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Comida Ucraniana</title>
+  <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap" rel="stylesheet" />
+  <style>
+    /* Reset geral */
+
+
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: sans-serif;
+      background: linear-gradient(to bottom, #0057b7 48%, #ffd700 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
+      color: #05070f;
+    }
+
+    header.cabecalho {
+      background: #05366b;
+      padding: 2rem;
+      text-align: center;
+      font-family: 'UnifrakturMaguntia', cursive;
+      color: #fad70f;
+      box-shadow: 0 0 25px rgb(245, 244, 243);
+      position: relative;
+    }
+
+    header h1 {
+      font-size: 3rem;
+    }
+
+    header .traducao {
+      font-size: 1.3rem;
+      color: #f4f5f8;
+    }
+
+    .home-icon {
+      position: absolute;
+      top: 1.5rem;
+      left: 2rem;
+      font-size: 2rem;
+      cursor: pointer;
+      color: rgb(252, 252, 245);
+      text-decoration: none;
+      transition: transform 0.3s;
+    }
+
+    .home-icon:hover {
+      transform: scale(1.1);
+    }
+
+    #app {
+      max-width: 500px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: rgba(141, 168, 223, 0.95);
+      border-radius: 1.5rem;
+      box-shadow: 0 0 30px rgb(247, 240, 240);
+    }
+
+    h2 {
+      font-family: 'UnifrakturMaguntia', cursive;
+      text-align: center;
+      color: #f6fa0e;
+      margin-bottom: 2rem;
+      font-size: 2.2rem;
+    }
+
+    .tela {
+      display: none;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .tela.ativa {
+      display: block;
+      opacity: 1;
+    }
+
+    .form-container {
+      background: #f5f5f5;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(201, 183, 183, 0.2);
+    }
+
+    .input-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      color: #693406;
+      margin-bottom: 0.5rem;
+      font-family: 'UnifrakturMaguntia', cursive;
+      font-size: 1.1rem;
+    }
+
+    input {
+      display: block;
+      width: 100%;
+      padding: 0.8rem;
+      border-radius: 20px;
+      border: 1px solid #aaa;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #0057b7;
+      box-shadow: 0 0 5px rgba(0, 87, 183, 0.3);
+    }
+
+    button {
+      background: #0057b7;
+      color: white;
+      border: none;
+      padding: 0.7rem 1.4rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin: 1rem 0.5rem;
+      width: calc(50% - 1rem);
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+      background: #003d8f;
+      transform: translateY(-2px);
+    }
+
+    .login-section {
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      background: #f9f9f9;
+      border-radius: 10px;
+      border: 2px solid #0057b7;
+    }
+
+    .login-section h3 {
+      color: #0057b7;
+      margin-bottom: 1rem;
+      font-family: 'UnifrakturMaguntia', cursive;
+      text-align: center;
+    }
+
+    .login-section p {
+      text-align: center;
+      color: #666;
+      margin-bottom: 1rem;
+    }
+
+    .btn-secondary {
+      background: #6c757d !important;
+      color: white !important;
+      padding: 0.5rem 1rem !important;
+      border: none !important;
+      border-radius: 5px !important;
+      cursor: pointer !important;
+      font-size: 0.9rem !important;
+      width: 100% !important;
+    }
+
+    .btn-secondary:hover {
+      background: #5a6268 !important;
+    }
+
+    button.cadastrar {
+      background: #28a745;
+    }
+
+    button.cadastrar:hover {
+      background: #218838;
+    }
+
+    button.full-width {
+      width: 100%;
+      margin: 1rem 0;
+    }
+
+    .btn-container {
+      display: flex;
+      gap: 0;
+      justify-content: space-between;
+    }
+
+    .mensagem {
+      padding: 0.8rem;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .sucesso {
+      background-color: #d4edda;
+      color: #155724;
+      border: 2px solid #c3e6cb;
+    }
+
+    .erro {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 2px solid #f5c6cb;
+    }
+
+    .link-toggle {
+      text-align: center;
+      margin-top: 1rem;
+      color: #693406;
+    }
+
+    .link-toggle a {
+      color: #0057b7;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .link-toggle a:hover {
+      text-decoration: underline;
+    }
+
+    .welcome-message {
+      background: #f5f5f5;
+      padding: 2rem;
+      border-radius: 12px;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .user-info {
+      font-family: 'UnifrakturMaguntia', cursive;
+      color: #693406;
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+    }
+
+    .ukrainian-text {
+      color: #0057b7;
+      font-style: italic;
+      margin-top: 0.5rem;
+    }
+
+
+
+
+
+    
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 2rem;
+      }
+      
+      #app {
+        margin: 1rem;
+        padding: 1.5rem;
+      }
+      
+      .btn-container {
+        flex-direction: column;
+      }
+      
+      button {
+        width: 100%;
+        margin: 0.5rem 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="cabecalho">
+    <a href="index.html" class="home-icon">🏠</a>
+    <h1>Comidas Ucranianas <br> Смачний <span class="traducao">(Smachnyi)</span></h1>
+  </header>
+
+  <div id="app">
+    
+    <!-- Tela de Login Simplificado -->
+    <section id="login" class="tela ativa">
+      <h2>ENTRAR</h2>
+      <div class="form-container">
+        <!-- Login de Cliente (Sem cadastro necessário) -->
+        <div class="login-section">
+          <h3>🍽️ Acesso do Cliente</h3>
+          <p>Entre diretamente para fazer seu pedido:</p>
+          <form onsubmit="loginCliente(event)">
+            <div class="input-group">
+              <label for="nomeCliente">👤 Seu Nome:</label>
+              <input type="text" id="nomeCliente" placeholder="Digite seu nome" required>
+            </div>
+            <button type="submit" class="full-width">Entrar como Cliente</button>
+          </form>
+        </div>
+
+        <hr style="margin: 2rem 0; border: 1px solid #ccc;">
+
+        <!-- Login de Gerente -->
+        <div class="login-section">
+          <h3>👨‍💼 Acesso do Gerente</h3>
+          <p><strong>Credenciais do sistema:</strong></p>
+          <p>📧 Email: gerente@restaurante.com</p>
+          <p>🔐 Senha: admin123</p>
+          <p><em>Use as credenciais acima para testar</em></p>
+          <form onsubmit="loginGerente(event)">
+            <div class="input-group">
+              <label for="emailGerente">📧 Email do Gerente:</label>
+              <input type="email" id="emailGerente" placeholder="gerente@restaurante.com" required>
+            </div>
+            <div class="input-group">
+              <label for="senhaGerente">🔐 Senha:</label>
+              <input type="password" id="senhaGerente" placeholder="Digite a senha" required>
+            </div>
+            <button type="submit" class="cadastrar full-width">Entrar como Gerente</button>
+          </form>
+          <div style="margin-top: 1rem;">
+            <button type="button" class="btn btn-secondary" onclick="testarConexaoServidor()">🔧 Testar Servidor</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tela de Cadastro (removida, não é mais necessária) -->
+    <!-- Esta seção foi removida para simplificar o sistema -->
+
+    <!-- Tela de Boas-vindas Cliente -->
+    <section id="dashboard-cliente" class="tela">
+      <h2>BEM-VINDO!</h2>
+      <div class="welcome-message">
+        <div class="user-info" id="nomeCliente">Olá, [Nome]!</div>
+        <p>Agora você pode fazer seus pedidos de comida ucraniana.</p>
+        <p class="ukrainian-text">Ласкаво просимо! (Bem-vindo!)</p>
+      </div>
+      <div class="btn-container">
+        <button onclick="irParaCardapio()">🍽️ Ver Cardápio</button>
+        <button onclick="logout()">🚪 Sair</button>
+      </div>
+    </section>
+
+    <!-- Tela de Boas-vindas Gerente -->
+    <section id="dashboard-gerente" class="tela">
+      <h2>PAINEL DO GERENTE</h2>
+      <div class="welcome-message">
+        <div class="user-info" id="nomeGerente">Olá, Gerente!</div>
+        <p>Acesse o painel administrativo para gerenciar o restaurante.</p>
+        <p class="ukrainian-text">Керівник ресторану (Gerente do Restaurante)</p>
+      </div>
+      <div class="btn-container">
+        <button onclick="irParaAdmin()">🛠️ Administração</button>
+        <button onclick="irParaCardapio()">🍽️ Ver Cardápio</button>
+        <button onclick="logout()">🚪 Sair</button>
+      </div>
+    </section>
+
+       <!-- Área de mensagens -->
+    <div id="mensagem"></div>
+
+    <!-- Modal para usuário não cadastrado -->
+    <div id="modalNaoCadastrado" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-header">Usuário não cadastrado</div>
+        <div class="modal-body">
+          Parece que você ainda não possui uma conta.<br>
+          Por favor, cadastre-se para continuar.
+        </div>
+        <div class="modal-buttons">
+          <button class="modal-btn-cadastrar" onclick="irParaCadastro()">Cadastrar</button>
+          <button class="modal-btn-fechar" onclick="fecharModal()">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let usuarioLogado = null;
+
+    function alternarTela(nomeTela) {
+      document.querySelectorAll('.tela').forEach(tela => {
+        tela.classList.remove('ativa');
+      });
+      document.getElementById(nomeTela).classList.add('ativa');
+      document.getElementById('mensagem').innerHTML = '';
+    }
+
+    function verificarRedirecionamento() {
+      const voltarPara = localStorage.getItem('voltarPara');
+      if (voltarPara) {
+        localStorage.removeItem('voltarPara');
+        window.location.href = voltarPara;
+        return true;
+      }
+      return false;
+    }
+
+    // Login simplificado para cliente
+    function loginCliente(event) {
+      event.preventDefault();
+      const nome = document.getElementById('nomeCliente').value.trim();
+      
+      if (nome) {
+        usuarioLogado = {
+          nome: nome,
+          tipo: 'cliente',
+          email: null
+        };
+        
+        localStorage.setItem('usuarioLogado', JSON.stringify(usuarioLogado));
+        
+        if (!verificarRedirecionamento()) {
+          document.getElementById('nomeCliente').textContent = `Olá, ${nome}!`;
+          alternarTela('dashboard-cliente');
+        }
+        
+        exibirMensagem('Login realizado com sucesso! 🎉', 'sucesso');
+      }
+    }
+
+    // Função para testar conexão com servidor
+    async function testarConexaoServidor() {
+      exibirMensagem('🔄 Testando conexão com servidor...', 'sucesso');
+      
+      try {
+        // Testar se servidor está rodando
+        const response = await fetch('http://localhost:3000/api/auth/usuarios');
+        const resultado = await response.json();
+        
+        if (resultado.success) {
+          exibirMensagem(`✅ Servidor funcionando! ${resultado.data.length} usuários encontrados.`, 'sucesso');
+          console.log('Usuários no servidor:', resultado.data);
+        } else {
+          exibirMensagem('⚠️ Servidor respondeu, mas com erro: ' + resultado.message, 'erro');
+        }
+      } catch (error) {
+        console.error('Erro de conexão:', error);
+        exibirMensagem('❌ Servidor não está rodando em http://localhost:3000. Execute: node server.js', 'erro');
+      }
+    }
+
+    // Login do gerente usando servidor
+    async function loginGerente(event) {
+      event.preventDefault();
+      const email = document.getElementById('emailGerente').value;
+      const senha = document.getElementById('senhaGerente').value;
+
+      exibirMensagem('🔄 Tentando fazer login...', 'sucesso');
+
+      try {
+        const response = await fetch('http://localhost:3000/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, senha })
+        });
+
+        const resultado = await response.json();
+        console.log('Resultado do login:', resultado);
+
+        if (resultado.success) {
+          usuarioLogado = resultado.usuario;
+          localStorage.setItem('usuarioLogado', JSON.stringify(resultado.usuario));
+          
+          if (!verificarRedirecionamento()) {
+            document.getElementById('nomeGerente').textContent = `Olá, ${resultado.usuario.nome}!`;
+            alternarTela('dashboard-gerente');
+          }
+          
+          exibirMensagem('✅ Login realizado com sucesso! 🎉', 'sucesso');
+        } else {
+          exibirMensagem('❌ ' + (resultado.message || 'Email ou senha incorretos!'), 'erro');
+        }
+      } catch (error) {
+        console.error('Erro no login:', error);
+        exibirMensagem('❌ Erro ao conectar com o servidor. Verifique se está rodando em localhost:3000', 'erro');
+      }
+    }
+
+    function logout() {
+      usuarioLogado = null;
+      localStorage.removeItem('usuarioLogado');
+      document.querySelectorAll('form').forEach(form => form.reset());
+      alternarTela('login');
+      exibirMensagem('Logout realizado com sucesso! Até logo! 👋', 'sucesso');
+    }
+
+    function irParaCardapio() {
+      if (usuarioLogado) {
+        window.location.href = 'index.html';
+      } else {
+        exibirMensagem('Faça login primeiro para acessar o cardápio!', 'erro');
+      }
+    }
+
+    function irParaAdmin() {
+      if (usuarioLogado && usuarioLogado.tipo === 'gerente') {
+        window.location.href = 'admin.html';
+      } else {
+        exibirMensagem('Apenas gerentes podem acessar a administração!', 'erro');
+      }
+    }
+
+    function exibirMensagem(mensagem, tipo) {
+      const elementoMensagem = document.getElementById('mensagem');
+      elementoMensagem.innerHTML = `<div class="mensagem ${tipo}">${mensagem}</div>`;
+      setTimeout(() => {
+        elementoMensagem.innerHTML = '';
+      }, 5000);
+    }
+
+    function exibirModalNaoCadastrado() {
+      document.getElementById('modalNaoCadastrado').classList.add('ativo');
+    }
+
+    function fecharModal() {
+      document.getElementById('modalNaoCadastrado').classList.remove('ativo');
+    }
+
+    function irParaCadastro() {
+      fecharModal();
+      alternarTela('cadastro');
+    }
+
+    window.onload = function() {
+      const usuarioSalvo = localStorage.getItem('usuarioLogado');
+      if (usuarioSalvo) {
+        usuarioLogado = JSON.parse(usuarioSalvo);
+        if (usuarioLogado.tipo === 'cliente') {
+          document.getElementById('nomeCliente').textContent = `Olá, ${usuarioLogado.nome}!`;
+          alternarTela('dashboard-cliente');
+        } else if (usuarioLogado.tipo === 'gerente') {
+          document.getElementById('nomeGerente').textContent = `Olá, ${usuarioLogado.nome}!`;
+          alternarTela('dashboard-gerente');
+        }
+      }
+    }
+  </script>
+</body>
+</html>

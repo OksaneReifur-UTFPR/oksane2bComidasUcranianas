@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração - Comidas Ucranianas</title>
+    <link rel="stylesheet" href="admin-style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🇺🇦 Administração do Cardápio</h1>
+            <p>Gerencie as comidas ucranianas do seu restaurante</p>
+        </div>
+
+        <div class="content">
+            <!-- Mensagens -->
+            <div id="message" class="message hidden"></div>
+
+            <!-- Botões de Ação -->
+            <div class="action-buttons">
+                <button class="btn btn-secondary" onclick="voltarParaCardapio()">
+                    ← Voltar ao Cardápio
+                </button>
+                <button class="btn btn-primary" onclick="carregarComidas()">
+                    🔄 Recarregar Lista
+                </button>
+            </div>
+
+            <!-- Formulário para adicionar/editar -->
+            <div class="form-section">
+                <h2 id="form-title">➕ Adicionar Nova Comida</h2>
+                <form id="comida-form">
+                    <input type="hidden" id="edit-id" value="">
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label for="nome-ucraniano">Nome em Ucraniano:</label>
+                            <input type="text" id="nome-ucraniano" placeholder="Ex: Вареники" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="traducao">Tradução em Português:</label>
+                            <input type="text" id="traducao" placeholder="Ex: Pêrorrê (Varenyky)" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="imagem">URL da Imagem:</label>
+                            <input type="text" id="imagem" placeholder="Ex: imagens/pirrorre.jpeg" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="alt">Texto Alternativo:</label>
+                            <input type="text" id="alt" placeholder="Ex: Varenyky" required>
+                        </div>
+                    </div>
+                    <div class="form-buttons">
+                        <button type="submit" class="btn btn-primary" id="submit-btn">
+                            ➕ Adicionar Comida
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="cancelarEdicao()">
+                            ❌ Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Lista de comidas -->
+            <div class="form-section">
+                <h2>📋 Lista de Comidas</h2>
+                <div id="loading" class="loading">
+                    Carregando comidas...
+                </div>
+                <div id="comidas-container" class="comidas-list hidden">
+                    <!-- As comidas serão carregadas aqui via JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin-script.js"></script>
+</body>
+</html>
